@@ -5,24 +5,26 @@
 
 /datum/NTSL_interpreter/proc/attempt_connect()
 	locked = 0
-	var/res = send(list(action="clear"))
+	var/res = send("clear", list())
 	if(!res)
 		log_debug("NTSL2+ Daemon could not be connected to. Functionality will not be enabled.")
+		return 0
 	else
 		START_PROCESSING(SSfast_process, src)
 		connected = 1
 		log_debug("NTSL2+ Daemon connected successfully.")
+		return 1
 
 /datum/NTSL_interpreter/proc/disconnect()
 	connected = 0
-	send(list(action="clear"))
+	send("clear", list())
 	STOP_PROCESSING(SSfast_process, src)
 	for(var/datum/ntsl_program/P in programs)
 		P.kill()
 
 /datum/NTSL_interpreter/process()
 	if(connected)
-		var/received_message = send(list(action="subspace_transmit"))
+		var/received_message = send("subspace_transmit", list())
 		if(received_message && received_message!="0")
 			var/messages = splittext(received_message, "\n")
 			for(var/individual_message in messages)
@@ -50,7 +52,7 @@
 		return 0
 
 	log_ntsl("[user.name]/[user.key] uploaded script to [computer] : [code]", istype(computer, /datum/TCS_Compiler/) ? SEVERITY_ALERT : SEVERITY_NOTICE, user.ckey)
-	var/program_id = send(list(action="new_program", code=code, ref = "\ref[computer]"))
+	var/program_id = send("new_program", list(code=code, ref = "\ref[computer]"))
 	if(connected) // Because both new program and error can send 0.
 		var/datum/ntsl_program/P = new(program_id)
 		programs += P
@@ -59,21 +61,21 @@
 
 /datum/NTSL_interpreter/proc/receive_subspace(var/channel, var/data)
 	if(istext(data))
-		ntsl2.send(list(action="subspace_receive", channel=copytext(channel, length(WP_ELECTRONICS)+1), type="text", data=html_decode(data)))
+		ntsl2.send("subspace_receive", list(channel=copytext(channel, length(WP_ELECTRONICS)+1), type="text", data=html_decode(data)))
 	else if(isnum(data))
-		ntsl2.send(list(action="subspace_receive", channel=copytext(channel, length(WP_ELECTRONICS)+1), type="num", data="[data]"))
+		ntsl2.send("subspace_receive", list(channel=copytext(channel, length(WP_ELECTRONICS)+1), type="num", data="[data]"))
 	else // Probably an object or something, just get a ref to it.
-		ntsl2.send(list(action="subspace_receive", channel=copytext(channel, length(WP_ELECTRONICS)+1), type="ref", data="\ref[data]"))
+		ntsl2.send("subspace_receive", list(channel=copytext(channel, length(WP_ELECTRONICS)+1), type="ref", data="\ref[data]"))
 
 /*
 	Sends a command to the Daemon. This is an internal function, and should be avoided when used externally.
 */
-/datum/NTSL_interpreter/proc/send(var/list/commands)
+/datum/NTSL_interpreter/proc/send(var/action, var/list/commands)
 	while(locked) // Prevent multiple requests being sent simultaneously and thus collisions.
 		sleep(1)
 	if(config.ntsl_hostname && config.ntsl_port) // Requires config to be set.
 		locked = 1
-		var/http[] = world.Export("http://[config.ntsl_hostname]:[config.ntsl_port]/[list2params(commands)]")
+		var/http[] = world.Export("http://[config.ntsl_hostname]:[config.ntsl_port]/[action]?[list2params(commands)]")
 		locked = 0
 		if(http)
 			return file2text(http["CONTENT"])

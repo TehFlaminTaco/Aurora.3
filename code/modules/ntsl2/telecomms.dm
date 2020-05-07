@@ -21,7 +21,7 @@
 /datum/TCS_Compiler/ntsl2/proc/update_code()
 	if(istype(running_code))
 		running_code.cycle(100000)
-		var/list/dat = json_decode(ntsl2.send(list(action="get_signals",id=running_code.id)))
+		var/list/dat = json_decode(ntsl2.send("get_signals", list(id=running_code.id)))
 		if(istype(dat) && ("content" in dat))
 			var/datum/signal/sig = null
 			if(dat["reference"])
