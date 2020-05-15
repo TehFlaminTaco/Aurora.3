@@ -374,6 +374,8 @@
 	owner.update_action_buttons()
 	owner = null
 
+	INVOKE_ASYNC(src, /obj/item/organ/proc/check_destroy_holoorgan)
+
 /obj/item/organ/proc/replaced(var/mob/living/carbon/human/target, var/obj/item/organ/external/affected)
 	owner = target
 	action_button_name = initial(action_button_name)
@@ -419,3 +421,11 @@
 //used by stethoscope
 /obj/item/organ/proc/listen()
 	return
+
+/obj/item/organ/proc/check_destroy_holoorgan()
+	if(status & ORGAN_HOLOGRAM)
+		var/turf/current_turf = get_turf(src)
+		// Dump our contents, to be safe.
+		for(var/atom/movable/A in contents)
+			A.Move(current_turf)
+		qdel(src) // Destroy us.

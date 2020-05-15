@@ -10,6 +10,7 @@
 #define DEBUG
 // END_PREFERENCES
 // BEGIN_INCLUDE
+#include "_maps\runtime.dm"
 #include "code\global.dm"
 #include "code\hub.dm"
 #include "code\names.dm"
@@ -1882,6 +1883,7 @@
 #include "code\modules\mob\living\carbon\human\diona_gestalt.dm"
 #include "code\modules\mob\living\carbon\human\emote.dm"
 #include "code\modules\mob\living\carbon\human\examine.dm"
+#include "code\modules\mob\living\carbon\human\holodummy.dm"
 #include "code\modules\mob\living\carbon\human\human.dm"
 #include "code\modules\mob\living\carbon\human\human_attackhand.dm"
 #include "code\modules\mob\living\carbon\human\human_damage.dm"
