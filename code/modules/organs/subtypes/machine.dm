@@ -223,7 +223,9 @@
 	icon_state = stored_mmi.icon_state
 
 /obj/item/organ/internal/mmi_holder/removed(var/mob/living/user)
-
+	if(status & ORGAN_HOLOGRAM)
+		qdel(stored_mmi)
+		return ..()
 	if(stored_mmi)
 		stored_mmi.forceMove(get_turf(src))
 		if(owner.mind)

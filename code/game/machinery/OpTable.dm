@@ -98,16 +98,17 @@
 	check_victim()
 
 /obj/machinery/optable/proc/take_victim(mob/living/carbon/C, mob/living/carbon/user)
-	if(C == user)
-		user.visible_message("\The [user] climbs on \the [src].","You climb on \the [src].")
-	else
-		visible_message(SPAN_NOTICE("\The [C] has been laid on \the [src] by \the [user]."))
+	if(istype(user))
+		if(C == user)
+			user.visible_message("\The [user] climbs on \the [src].","You climb on \the [src].")
+		else
+			visible_message(SPAN_NOTICE("\The [C] has been laid on \the [src] by \the [user]."))
+		add_fingerprint(user)
 	if(C.client)
 		C.client.perspective = EYE_PERSPECTIVE
 		C.client.eye = src
 	C.resting = TRUE
 	C.forceMove(loc)
-	add_fingerprint(user)
 	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
 		victim = H

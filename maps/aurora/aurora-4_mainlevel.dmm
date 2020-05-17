@@ -20189,6 +20189,10 @@
 	},
 /turf/simulated/floor/tiled,
 /area/engineering/storage_eva)
+"aHF" = (
+/obj/machinery/computer/operating/robotics,
+/turf/simulated/floor/tiled/white,
+/area/assembly/robotics_cyborgification)
 "aHG" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/glass_engineering{
@@ -32199,12 +32203,6 @@
 /obj/machinery/light{
 	icon_state = "tube1";
 	dir = 1
-	},
-/turf/simulated/floor/tiled/white,
-/area/assembly/robotics_cyborgification)
-"bbz" = (
-/obj/machinery/computer/operating{
-	name = "Robotics Operating Computer"
 	},
 /turf/simulated/floor/tiled/white,
 /area/assembly/robotics_cyborgification)
@@ -96523,7 +96521,7 @@ xGF
 uFr
 pXw
 wsP
-bbz
+aHF
 nsW
 csb
 bfY

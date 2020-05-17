@@ -48,6 +48,8 @@
 
 	in_stasis = istype(loc, /obj/structure/closet/body_bag/cryobag) && loc:opened == 0
 	if(in_stasis) loc:used++
+	else if(istype(loc, /obj/item/disk/holodummy))
+		in_stasis = 1
 
 	..()
 
@@ -226,12 +228,13 @@
 /mob/living/carbon/human/proc/handle_stasis_bag()
 	// Handle side effects from stasis bag
 	if(in_stasis)
-		// First off, there's no oxygen supply, so the mob will slowly take brain damage
-		adjustOxyLoss(0.1)
+		if(istype(loc, /obj/structure/closet/body_bag/cryobag))
+			// First off, there's no oxygen supply, so the mob will slowly take brain damage
+			adjustOxyLoss(0.1)
 
-		// Next, the method to induce stasis has some adverse side-effects, manifesting
-		// as cloneloss
-		adjustCloneLoss(0.1)
+			// Next, the method to induce stasis has some adverse side-effects, manifesting
+			// as cloneloss
+			adjustCloneLoss(0.1)
 		if(stat != DEAD)
 			blinded = TRUE
 			stat = UNCONSCIOUS
